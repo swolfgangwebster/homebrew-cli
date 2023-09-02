@@ -7,7 +7,7 @@ from helpers import menuAndSelect, mainMenu, addCreator, createItem, assignCreat
 
 
 if __name__ == '__main__':
-    engine =  create_engine('sqlite:///db/gem.db')
+    engine =  create_engine('sqlite:///db/homebrew.db')
 
     Session = sessionmaker(bind=engine)
     session = Session()

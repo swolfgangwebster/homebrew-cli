@@ -78,6 +78,17 @@ mainMenu = ["Homebrew Content Manager",
          '3': ['Create.', menuAndSelectCreate]
          }]
 
+def backOrExit(menu, sesh):
+    print("\n\tb) Back")
+    print("\tX) Exit\n")
+    r = input("Make Selection: ")
+
+    if r in ['x','X']:
+        return
+    elif r in ['b','B']:
+        print('\n')
+        menu(sesh)
+
 
 
 def createItem(sesh):
@@ -86,6 +97,8 @@ def createItem(sesh):
     creator = assignCreator(sesh)
     sesh.add(Item(name = name,description = desc, item_creator_id = creator))
     sesh.commit()
+    menuAndSelectCreate(sesh)
+
 
 
 def createSpell(sesh):
@@ -94,6 +107,7 @@ def createSpell(sesh):
     creator = assignCreator(sesh)
     sesh.add(Spell(name = name,description = desc, spell_creator_id = creator))
     sesh.commit()
+    menuAndSelectCreate(sesh)
 
 
 def createRule(sesh):
@@ -102,6 +116,7 @@ def createRule(sesh):
     creator = assignCreator(sesh)
     sesh.add(Rule(rule = rule, justification = just, rule_creator_id = creator))
     sesh.commit()
+    menuAndSelectCreate(sesh)
 
 createMenu = ['Create Homebrew Content',
             {'1': ['Create new Item.', createItem],
@@ -109,11 +124,17 @@ createMenu = ['Create Homebrew Content',
              '3': ['Create new Rule', createRule],
              '4': ['Back', menuAndSelectMain]}]
 
-def displayList(resp):
-    print('\n')
-    for r in resp:
-        print(f'\t{r.id}) {r}')
-    print('\n')
+def displayList(resp, IDnumer = True):
+   # print('\n')
+    if IDnumer:
+        for r in resp:
+            print(f'\t{r.id}) {r}')
+    else:
+        i = 1
+        for r in resp:
+            print(f'\t{i}) {r}')
+            i = i + 1
+   # print('\n')
 
 
 def viewItems(sesh):
@@ -122,6 +143,7 @@ def viewItems(sesh):
         displayList(items)
     except:
         print('\n\tNo Entries\n')
+    backOrExit(menuAndSelectView, sesh)
 
 
 def viewSpells(sesh):
@@ -130,7 +152,7 @@ def viewSpells(sesh):
         displayList(items)
     except:
         print('\n\tNo Entries\n')
-
+    backOrExit(menuAndSelectView, sesh)
 
 def viewRules(sesh):
     try:
@@ -138,11 +160,28 @@ def viewRules(sesh):
         displayList(items)
     except:
         print('\n\tNo Entries\n')
+    backOrExit(menuAndSelectView, sesh)
 
 def viewCreators(sesh):
     try: 
         items = sesh.query(Creator).all()
+        print('\n')
         displayList(items)
+        print("\n\tb) Back")
+        print("\tX) Exit\n")
+        resp = input("\nSelect to view all creations: ")
+        if resp in ['b','B']:
+            menuAndSelectView(sesh)
+            return
+        elif resp in ['x','X']:
+            return
+        items = sesh.query(Item).filter(Item.item_creator_id == int(resp)).all()
+        spells = sesh.query(Spell).filter(Spell.spell_creator_id == int(resp)).all()
+        rules = sesh.query(Rule).filter(Rule.rule_creator_id == int(resp)).all()
+        all = items + spells + rules
+        displayList(all, False)
+        backOrExit(viewCreators ,sesh)
+
     except:
         print('\n\tNo Entries\n')
 

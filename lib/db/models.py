@@ -28,7 +28,7 @@ class Item(Base):
 
     def __repr__(self):
         print('\n')
-        return f":::{self.name}::: \n\t{self.description}\n"
+        return f":::{self.name}::: \n\t   -{self.description}\n"
     
 class Spell(Base):
     __tablename__ = 'spells'
@@ -40,7 +40,7 @@ class Spell(Base):
 
     def __repr__(self):
         print('\n')
-        return f":::{self.name}::: \n\t{self.description}\n"
+        return f":::{self.name}::: \n\t   -{self.description}\n"
     
 
 class Rule(Base):
@@ -52,4 +52,4 @@ class Rule(Base):
     rule_creator_id = Column(Integer(), ForeignKey('creators.id'))
 
     def __repr__(self):
-        return f":::Rule::: \n\t{self.rule} \n\tJustification: {self.justification}\n"
+        return f"Rule::: {self.rule} \n\t   Justification: \n\t\t{self.justification}\n"
